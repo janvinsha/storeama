@@ -20,8 +20,8 @@ const FileCard = (file) => {
       />
       <div className="nft-desc">
         <span className="title">
-          <h3>{file?.[1]}</h3>
-          <h4>{file?.[2]}</h4>
+          <h3>{file?.[1] || "Rodeo"}</h3>
+          <h4>{file?.[2] || "Image"}</h4>
         </span>
       </div>
     </StyledFileCard>
@@ -59,6 +59,7 @@ const StyledFileCard = styled(motion.div)<{ theme_: boolean }>`
     display: flex;
     flex-flow: column wrap;
     padding: 0rem 1rem;
+    padding-bottom: 1rem;
     gap: 0.5rem;
 
     .title,

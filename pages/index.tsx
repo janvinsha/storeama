@@ -11,8 +11,9 @@ import Filter from "../components/Filter";
 export default function Home() {
   const router = useRouter();
   const { theme, currentAccount, getFiles } = useContext(AppContext);
-  const [files, setFiles] = useState();
+  const [files, setFiles] = useState([{}]);
   const [sortBy, setSortBy] = useState("");
+  const dFiles = [{}];
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -36,7 +37,7 @@ export default function Home() {
         <div className="description">
           <div className="desc">
             <h1>Upload and organize your files</h1>
-            <h2>A decentralized cloud on the FVM network</h2>
+            <h2>A decentralized cloud on the FVM </h2>
             <h3>Connect you wallet to access your personal drive</h3>
           </div>
           <div className="nft-desc">
@@ -70,7 +71,7 @@ export default function Home() {
             </div>
           </div>
           <div className="cards">
-            {files?.map((file: any, i) => (
+            {dFiles?.map((file: any, i) => (
               <FileCard listing={file} key={i} />
             ))}
           </div>
