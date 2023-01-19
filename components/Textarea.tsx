@@ -103,7 +103,7 @@ const StyledInput = styled(motion.div)`
           .asterik {
             display: block;
             margin-left: 0.2vw;
-            color: #0592ec;
+            color: #20b2aa;
           }
           .optional {
             margin-left: 0.2vw;

@@ -4,6 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
+/storeama-subgraph/node_modules
+/storeama-subgraph/build
+/storeama-subgraph/generated
 
 # testing
 /coverage

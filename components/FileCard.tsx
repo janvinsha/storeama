@@ -4,24 +4,22 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import AppContext from "../context/AppContext";
-
-const FileCard = (file) => {
+import useDownloader from "react-use-downloader";
+const FileCard = ({ file }) => {
   const { theme, currentAccount } = useContext(AppContext);
-  const router = useRouter();
+  const { download } = useDownloader();
 
   return (
-    <StyledFileCard
-      theme_={theme}
-      onClick={() => router.push(`/files/${file?.[0]}`)}
-    >
+    <StyledFileCard theme_={theme}>
       <img
-        src={file?.[2] == "Image" ? file?.[2] : "images/rodeo.png"}
+        src={file?.docType == "Image" ? file?.url : "images/rodeo.png"}
         alt="img"
+        onClick={() => download(file?.url, file?.name)}
       />
       <div className="nft-desc">
         <span className="title">
-          <h3>{file?.[1] || "Rodeo"}</h3>
-          <h4>{file?.[2] || "Image"}</h4>
+          <h3>{file?.name || "Rodeo"}</h3>
+          <h4>{file?.docType || "Image"}</h4>
         </span>
       </div>
     </StyledFileCard>

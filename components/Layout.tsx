@@ -16,8 +16,13 @@ import { GlobalStyle } from "../components";
 
 import { Wallet, providers } from "ethers";
 
+import { ApolloProvider } from "@apollo/client";
+
+import client from "../hooks/apollo";
+import notify from "../hooks/notification";
+
 import storeamaAbi from "../storeama-contract/storeama_abi.json";
-const STOREAMA_CONTRACT_ADDRESS = "0xBaFDdDCd96e18Bedd401f781c4020E8677898828";
+const STOREAMA_CONTRACT_ADDRESS = "0x5590548C995fDe17476ca1F7D08E26cC93aEC667";
 
 const projectId = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
 const projectSecret = process.env.NEXT_PUBLIC_INFURA_PROJECT_SECRET;
@@ -44,12 +49,6 @@ if (typeof window != "undefined") {
   });
 }
 
-const privateKey = process.env.NEXT_PUBLIC_WALLET_PRIVATE_KEY;
-const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
-const tblWallet = new Wallet(privateKey);
-const tblProvider = new providers.AlchemyProvider("maticmum", alchemyKey);
-
-const filesTable = "files_80001_1316";
 const Layout = ({ children }: Props) => {
   const [theme, setTheme] = useState(true);
 
@@ -122,35 +121,6 @@ const Layout = ({ children }: Props) => {
     poll();
   }, []);
 
-  const getFiles = async () => {
-    try {
-      if (currentAccount) {
-        const wallet = await web3Modal.connect();
-        const tProvider = new ethers.providers.Web3Provider(wallet);
-        const signer = tProvider.getSigner();
-        const connectedContract = new ethers.Contract(
-          STOREAMA_CONTRACT_ADDRESS,
-          storeamaAbi.abi,
-          signer
-        );
-
-        let files = await connectedContract.getDocuments(currentAccount);
-        console.log("this are the files", files);
-        return files;
-      } else {
-        return [];
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const getFile = async (id) => {
-    try {
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const uploadFile = async (file) => {
     try {
       const wallet = await web3Modal.connect();
@@ -166,34 +136,38 @@ const Layout = ({ children }: Props) => {
         file?.name,
         file?.type,
         file?.description,
-        file?.url,
-        { value: "2" }
+        file?.url
       );
       console.log("CHECK FILE WELL", tx);
+      notify({ title: "File added successfully", type: "success" });
     } catch (err) {
+      notify({
+        title: "There was an error trying to upload a file",
+        type: "error",
+      });
       console.log(err);
     }
   };
 
   return (
     <StyledLayout>
-      <AppContext.Provider
-        value={{
-          theme,
-          changeTheme,
-          connectWallet,
-          currentAccount,
-          disconnectWallet,
-          chainId,
-          getFiles,
-          getFile,
-          uploadFile,
-        }}
-      >
-        <GlobalStyle theme={theme} />
-        <Header />
-        {children}
-      </AppContext.Provider>
+      <ApolloProvider client={client}>
+        <AppContext.Provider
+          value={{
+            theme,
+            changeTheme,
+            connectWallet,
+            currentAccount,
+            disconnectWallet,
+            chainId,
+            uploadFile,
+          }}
+        >
+          <GlobalStyle theme={theme} />
+          <Header />
+          {children}
+        </AppContext.Provider>
+      </ApolloProvider>
     </StyledLayout>
   );
 };

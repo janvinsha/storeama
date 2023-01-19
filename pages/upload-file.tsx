@@ -28,7 +28,7 @@ const client = create({
 const UploadFile = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
-  const [type, setType] = useState("");
+  const [type, setType] = useState("Image");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -76,7 +76,7 @@ const UploadFile = () => {
         url: fileUrl,
       });
       setLoading(false);
-      notify({ title: "File added successfully", type: "success" });
+
       console.log(fileResponse, fileUrl, "RESPONSE ");
       return fileResponse;
     } catch (error) {

@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+import { gql, useQuery } from "@apollo/client";
+
 import styled from "styled-components";
 
 import AppContext from "../context/AppContext";
@@ -22,15 +24,30 @@ export default function Home() {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  useEffect(() => {
-    getData();
-  }, []);
+  useEffect(() => {}, []);
+  const DOCUMENTS_QUERY = gql`
+    query GetDocuments($address: String) {
+      documents(first: 10, where: { user_contains: $address }) {
+        id
+        name
+        docType
+        description
+        user
+        url
+      }
+    }
+  `;
 
-  const getData = async () => {
-    const tempFiles = await getFiles();
-    setFiles(tempFiles);
-    console.log("HERE ARE THE  FILES OOOooooooooooo", tempFiles);
-  };
+  const { data: documentsData } = useQuery(DOCUMENTS_QUERY, {
+    variables: {
+      address: `${
+        currentAccount || "0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39"
+      }`,
+    },
+  });
+  const documents = documentsData?.documents;
+  console.log("HERE ARE THE DOCUMENTS ", documents);
+
   return (
     <StyledHome theme_={theme}>
       {!currentAccount ? (
@@ -70,11 +87,17 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="cards">
-            {dFiles?.map((file: any, i) => (
-              <FileCard listing={file} key={i} />
-            ))}
-          </div>
+          {documents?.length > 0 ? (
+            <div className="cards">
+              {documents?.map((file, i) => (
+                <FileCard file={file} key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="middle">
+              <h2>You have no files, upload a file</h2>
+            </div>
+          )}
         </div>
       )}
     </StyledHome>
@@ -130,5 +153,13 @@ const StyledHome = styled(motion.div)<{ theme_: boolean }>`
       width: 100%;
       padding: 0rem 0rem;
     }
+  }
+  .middle {
+    padding: 2rem 0rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50vh;
   }
 `;

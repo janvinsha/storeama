@@ -29,7 +29,7 @@ struct Document{
     }
       function createDocument(string memory name,string memory docType,string memory description,
       string memory url
-    ) public payable {
+    ) public {
       _documentIds.increment();
       uint256 newDocumentId = _documentIds.current();
     
